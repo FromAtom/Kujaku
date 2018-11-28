@@ -3,7 +3,7 @@ require 'json'
 
 class SlackApiClient
   SLACK_API_ENDPOINT = 'https://slack.com/api/chat.unfurl'.freeze
-  SLACK_AUTH_KEY = ENV['SLACK_AUTH_KEY']
+  SLACK_AUTH_KEY = ENV['SLACK_OAUTH_ACCESS_TOKEN']
 
   def initialize
     uri = URI.parse(SLACK_API_ENDPOINT)
