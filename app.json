@@ -24,6 +24,9 @@
   "addons": [
     {
       "plan": "redistogo:nano"
+    },
+    {
+      "plan": "papertrail:choklad"
     }
   ]
 }
