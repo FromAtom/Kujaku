@@ -1,5 +1,5 @@
 {
-  "name": "slack-esa-url-unfurl",
+  "name": "Kujaku",
   "description": "Slack App that to unfurl url of esa.io",
   "keywords": [
     "productivity",
@@ -7,7 +7,7 @@
     "esa",
     "slack"
   ],
-  "repository": "https://github.com/FromAtom/slack-esa-url-unfurl",
+  "repository": "https://github.com/FromAtom/Kujaku",
   "success_url": "/",
   "env": {
     "SLACK_OAUTH_ACCESS_TOKEN": {

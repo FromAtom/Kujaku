@@ -42,7 +42,7 @@ class EsaClient
 
     title = post['full_name']
     title.insert(0, '[WIP] ') if post['wip']
-    footer = generateFooter(post)
+    footer = generate_footer(post)
 
     # 素のままだと省略されても長いので10行までにする
     text = post['body_md'].lines[0, 10].map{ |item| item.chomp }.join("\n")
@@ -57,12 +57,12 @@ class EsaClient
       footer: footer
     }
 
-    setRedis(post_number, info)
+    set_redis(post_number, info)
     return info
   end
 
   private
-  def setRedis(post_number, info)
+  def set_redis(post_number, info)
     json = {
       created_at: Time.now,
       info: info
@@ -71,7 +71,7 @@ class EsaClient
     @redis.set(post_number, json)
   end
 
-  def generateFooter(post)
+  def generate_footer(post)
     updated_user_name = post.dig('updated_by', 'screen_name') || 'unknown'
     created_at = Time.parse(post['updated_at'])
     created_at_str = created_at.strftime("%Y-%m-%d %H:%M:%S")
