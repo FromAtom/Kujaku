@@ -13,10 +13,10 @@
       "description": "ex) xoxp-XXXXXXXX-XXXXXXXX-XXXXX"
     },
     "ESA_ACCESS_TOKEN": {
-      "description": "URL展開の対象にするTeamで発行した Personal Access Token （要Read権限）"
+      "description": "Personal Access Token (Require read permission)"
     },
     "ESA_TEAM_NAME": {
-      "description": "URL展開の対象にするチーム名"
+      "description": "Esa team name of targeted for URL unfurling"
     }
   },
   "image": "heroku/ruby",
