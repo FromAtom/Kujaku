@@ -5,6 +5,8 @@ require 'json'
 require_relative 'lib/esa_client'
 require_relative 'lib/slack_api_client'
 
+ESA_TEAM_NAME = ENV['ESA_TEAM_NAME']
+
 post '/' do
   puts '[START]'
   params = JSON.parse(request.body.read)
@@ -25,7 +27,7 @@ post '/' do
     unfurls = {}
     links.each do |link|
       url = link['url']
-      next unless url =~ /\Ahttps:\/\/pixiv.esa.io\/posts\/(\d+).*\z/
+      next unless url =~ /\Ahttps:\/\/#{ESA_TEAM_NAME}.esa.io\/posts\/(\d+).*\z/
       post_number = $1
 
       esa = EsaClient.new
