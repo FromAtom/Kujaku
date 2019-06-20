@@ -54,7 +54,8 @@ class EsaClient
       author_icon: post['created_by']['icon'],
       text: text,
       color: '#3E8E89',
-      footer: footer
+      footer: footer,
+      ts: Time.parse(post['updated_at']).to_i
     }
 
     set_redis(post_number, info)
@@ -73,9 +74,7 @@ class EsaClient
 
   def generate_footer(post)
     updated_user_name = post.dig('updated_by', 'screen_name') || 'unknown'
-    created_at = Time.parse(post['updated_at'])
-    created_at_str = created_at.strftime("%Y-%m-%d %H:%M:%S")
 
-    footer = "Updated by #{updated_user_name} \@#{created_at_str}"
+    "Updated by #{updated_user_name}"
   end
 end
