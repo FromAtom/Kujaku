@@ -39,8 +39,6 @@ post '/' do
         attachment = esa.get_post(post_number)
         unfurls[url] = attachment
       end
-
-      unfurls[url] = attachment
     end
 
     payload = {
