@@ -98,7 +98,7 @@ class EsaClient
       text: text,
       color: '#3E8E89',
       footer: footer,
-      ts: Time.parse(post['updated_at']).to_i
+      ts: Time.parse(comment['updated_at']).to_i
     }
 
     set_redis("comment-#{comment_number}", info)
