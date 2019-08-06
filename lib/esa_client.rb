@@ -16,7 +16,7 @@ class EsaClient
     @redis = Redis.new(:url => REDIS_URL)
   end
 
-  def get(post_number)
+  def get_post(post_number)
     # 古いキャッシュを消す
     keys = @redis.keys("*")
     now = Time.now
