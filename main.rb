@@ -28,12 +28,12 @@ post '/' do
     links.each do |link|
       url = link['url']
 
-      if url =~ /\Ahttps:\/\/pixiv.esa.io\/posts\/\d+#comment-(\d+).*\z/
+      if url =~ /\Ahttps:\/\/#{ESA_TEAM_NAME}.esa.io\/posts\/\d+#comment-(\d+).*\z/
         comment_number = $1
         esa = EsaClient.new
         attachment = esa.get_comment(comment_number)
         unfurls[url] = attachment
-      elsif url =~ /\Ahttps:\/\/pixiv.esa.io\/posts\/(\d+).*\z/
+      elsif url =~ /\Ahttps:\/\/#{ESA_TEAM_NAME}.esa.io\/posts\/(\d+).*\z/
         post_number = $1
         esa = EsaClient.new
         attachment = esa.get_post(post_number)
