@@ -116,8 +116,12 @@ class EsaClient
   end
 
   def generate_footer(post)
-    updated_user_name = post.dig('updated_by', 'screen_name') || 'unknown'
+    updated_user_name = post.dig('updated_by', 'screen_name')
+    unless updated_user_name.nil?
+      return "Updated by #{updated_user_name}"
+    end
 
-    "Updated by #{updated_user_name}"
+    created_user_name = post.dig('created_by', 'screen_name') || 'unknown'
+    return "Created by #{created_user_name}"
   end
 end
