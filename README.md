@@ -7,3 +7,6 @@ Slackに貼られたesaのURLを展開するSlack Appです。
 
 ## LICENSE
 [MIT](LICENSE)
+
+## Note
+Icon made by Freepik from [www.flaticon.com](www.flaticon.com)
