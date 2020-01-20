@@ -9,4 +9,4 @@ Slackに貼られたesaのURLを展開するSlack Appです。
 [MIT](LICENSE)
 
 ## Note
-Icon made by Freepik from [www.flaticon.com](www.flaticon.com)
+Icon made by Freepik from [www.flaticon.com](https://www.flaticon.com)
