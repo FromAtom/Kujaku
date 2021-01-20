@@ -7,7 +7,7 @@
     "esa",
     "slack"
   ],
-  "repository": "https://github.com/FromAtom/Kujaku",
+  "repository": "https://github.com/Lighthouse-Inc/Kujaku",
   "env": {
     "SLACK_OAUTH_ACCESS_TOKEN": {
       "description": "ex) xoxp-XXXXXXXX-XXXXXXXX-XXXXX"
