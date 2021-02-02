@@ -62,7 +62,7 @@ class EsaClient
     return info
   end
 
-  def get_comment(comment_number)
+  def get_comment(post_number, comment_number)
     # 古いキャッシュを消す
     keys = @redis.keys("comment-*")
     now = Time.now
@@ -83,6 +83,9 @@ class EsaClient
       return cache['info']
     end
 
+    post = @esa_client.post(post_number).body
+    post_title = post.nil? ? '？？？' : post['full_name']
+
     comment = @esa_client.comment(comment_number).body
     return {} if comment.nil?
 
@@ -91,7 +94,7 @@ class EsaClient
     footer = generate_footer(comment)
     text = comment['body_md'].lines.map{ |item| item.chomp }.join("\n")
     info = {
-      title: 'コメント',
+      title: "#{post_title} へのコメント",
       title_link: comment['url'],
       author_name: comment['created_by']['screen_name'],
       author_icon: comment['created_by']['icon'],
