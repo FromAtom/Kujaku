@@ -17,6 +17,10 @@
     },
     "ESA_TEAM_NAME": {
       "description": "Esa team name of targeted for URL unfurling"
+    },
+    "ESA_OUTPUT_FORMAT": {
+      "description": "The format outputting by Kujaku. 'full' or 'title' (default: 'full')",
+      "required": false
     }
   },
   "image": "heroku/ruby",
