@@ -18,8 +18,12 @@
     "ESA_TEAM_NAME": {
       "description": "Esa team name of targeted for URL unfurling"
     },
-    "ESA_OUTPUT_FORMAT": {
-      "description": "The format outputting by Kujaku. 'full' or 'title' (default: 'full')",
+    "ESA_MAX_ARTICLE_LINES": {
+      "description": "Maximum number of lines of article text outputting by Kujaku. (default: 10)",
+      "required": false
+    },
+    "ESA_MAX_COMMENT_LINES": {
+      "description": "Maximum number of lines of comment text outputting by Kujaku. (default: 10)",
       "required": false
     }
   },
