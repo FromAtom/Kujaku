@@ -9,6 +9,7 @@ class EsaClient
   ESA_MAX_ARTICLE_LINES = ENV.fetch('ESA_MAX_ARTICLE_LINES', '10').to_i
   ESA_MAX_COMMENT_LINES = ENV.fetch('ESA_MAX_COMMENT_LINES', '10').to_i
   REDIS_URL = ENV['REDISTOGO_URL']
+  REDIS_TTL = 60 * 60 # 1時間
 
   def initialize
     @esa_client = Esa::Client.new(
@@ -90,7 +91,7 @@ class EsaClient
     # ttl導入前のkeyが残り続けることを避ける
     @redis.keys.each do |key|
       if @redis.ttl(key) == -1
-        @redis.expire(key, 60 * 60)
+        @redis.expire(key, REDIS_TTL)
       end
     end
 
@@ -102,7 +103,7 @@ class EsaClient
       info: info
     }.to_json
 
-    @redis.set(key, json, ex: 60 * 60)
+    @redis.set(key, json, ex: REDIS_TTL)
   end
 
   def generate_footer(post)
