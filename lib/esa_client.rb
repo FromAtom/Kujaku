@@ -19,19 +19,6 @@ class EsaClient
   end
 
   def get_post(post_number)
-    # 古いキャッシュを消す
-    keys = @redis.keys("*")
-    now = Time.now
-    keys.each do |key|
-      json = @redis.get(key)
-      cache = JSON.parse(json)
-      created_at = Time.parse(cache['created_at'])
-      diff = now - created_at
-
-      # 1時間以上前のログを消す
-      @redis.del(key) if diff > (60 * 60)
-    end
-
     cache_json = @redis.get(post_number)
     unless cache_json.nil?
       puts '[LOG] cache hit'
@@ -62,19 +49,6 @@ class EsaClient
   end
 
   def get_comment(comment_number)
-    # 古いキャッシュを消す
-    keys = @redis.keys("comment-*")
-    now = Time.now
-    keys.each do |key|
-      json = @redis.get(key)
-      cache = JSON.parse(json)
-      created_at = Time.parse(cache['created_at'])
-      diff = now - created_at
-
-      # 1時間以上前のログを消す
-      @redis.del(key) if diff > (60 * 60)
-    end
-
     cache_json = @redis.get("comment-#{comment_number}")
     unless cache_json.nil?
       puts '[LOG] cache hit'
@@ -114,11 +88,10 @@ class EsaClient
 
   def set_redis(key, info)
     json = {
-      created_at: Time.now,
       info: info
     }.to_json
 
-    @redis.set(key, json)
+    @redis.set(key, json, ex: 60 * 60)
   end
 
   def generate_footer(post)
