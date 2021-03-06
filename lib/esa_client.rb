@@ -19,7 +19,7 @@ class EsaClient
   end
 
   def get_post(post_number)
-    cache_json = @redis.get(post_number)
+    cache_json = get_redis(post_number)
     unless cache_json.nil?
       puts '[LOG] cache hit'
       cache = JSON.parse(cache_json)
@@ -49,7 +49,7 @@ class EsaClient
   end
 
   def get_comment(comment_number)
-    cache_json = @redis.get("comment-#{comment_number}")
+    cache_json = get_redis("comment-#{comment_number}")
     unless cache_json.nil?
       puts '[LOG] cache hit'
       cache = JSON.parse(cache_json)
@@ -84,6 +84,17 @@ class EsaClient
 
   def comment_text(comment)
     comment['body_md'].lines[0, ESA_MAX_COMMENT_LINES].map{ |item| item.chomp }.join("\n")
+  end
+
+  def get_redis(key)
+    # ttl導入前のkeyが残り続けることを避ける
+    @redis.keys.each do |key|
+      if @redis.ttl(key) == -1
+        @redis.expire(key, 60 * 60)
+      end
+    end
+
+    @redis.get(key)
   end
 
   def set_redis(key, info)
