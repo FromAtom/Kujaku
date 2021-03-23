@@ -6,6 +6,8 @@ require 'time'
 class EsaClient
   ESA_ACCESS_TOKEN = ENV['ESA_ACCESS_TOKEN']
   ESA_TEAM_NAME = ENV['ESA_TEAM_NAME']
+  ESA_MAX_ARTICLE_LINES = ENV.fetch('ESA_MAX_ARTICLE_LINES', '10').to_i
+  ESA_MAX_COMMENT_LINES = ENV.fetch('ESA_MAX_COMMENT_LINES', '10').to_i
   REDIS_URL = ENV['REDISTOGO_URL']
 
   def initialize
@@ -44,15 +46,12 @@ class EsaClient
     title.insert(0, '[WIP] ') if post['wip']
     footer = generate_footer(post)
 
-    # 素のままだと省略されても長いので10行までにする
-    text = post['body_md'].lines[0, 10].map{ |item| item.chomp }.join("\n")
-
     info = {
       title: title,
       title_link: post['url'],
       author_name: post['created_by']['screen_name'],
       author_icon: post['created_by']['icon'],
-      text: text,
+      text: article_text(post),
       color: '#3E8E89',
       footer: footer,
       ts: Time.parse(post['updated_at']).to_i
@@ -89,13 +88,12 @@ class EsaClient
     title = comment['full_name']
     title.insert(0, '[WIP] ') if comment['wip']
     footer = generate_footer(comment)
-    text = comment['body_md'].lines.map{ |item| item.chomp }.join("\n")
     info = {
       title: 'コメント',
       title_link: comment['url'],
       author_name: comment['created_by']['screen_name'],
       author_icon: comment['created_by']['icon'],
-      text: text,
+      text: comment_text(comment),
       color: '#3E8E89',
       footer: footer,
       ts: Time.parse(comment['updated_at']).to_i
@@ -106,6 +104,14 @@ class EsaClient
   end
 
   private
+  def article_text(post)
+    post['body_md'].lines[0, ESA_MAX_ARTICLE_LINES].map{ |item| item.chomp }.join("\n")
+  end
+
+  def comment_text(comment)
+    comment['body_md'].lines[0, ESA_MAX_COMMENT_LINES].map{ |item| item.chomp }.join("\n")
+  end
+
   def set_redis(key, info)
     json = {
       created_at: Time.now,
