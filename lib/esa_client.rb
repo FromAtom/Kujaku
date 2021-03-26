@@ -9,6 +9,7 @@ class EsaClient
   ESA_MAX_ARTICLE_LINES = ENV.fetch('ESA_MAX_ARTICLE_LINES', '10').to_i
   ESA_MAX_COMMENT_LINES = ENV.fetch('ESA_MAX_COMMENT_LINES', '10').to_i
   REDIS_URL = ENV['REDISTOGO_URL']
+  REDIS_TTL = 60 * 60 # 1時間
 
   def initialize
     @esa_client = Esa::Client.new(
@@ -19,20 +20,7 @@ class EsaClient
   end
 
   def get_post(post_number)
-    # 古いキャッシュを消す
-    keys = @redis.keys("*")
-    now = Time.now
-    keys.each do |key|
-      json = @redis.get(key)
-      cache = JSON.parse(json)
-      created_at = Time.parse(cache['created_at'])
-      diff = now - created_at
-
-      # 1時間以上前のログを消す
-      @redis.del(key) if diff > (60 * 60)
-    end
-
-    cache_json = @redis.get(post_number)
+    cache_json = get_redis(post_number)
     unless cache_json.nil?
       puts '[LOG] cache hit'
       cache = JSON.parse(cache_json)
@@ -62,20 +50,7 @@ class EsaClient
   end
 
   def get_comment(comment_number)
-    # 古いキャッシュを消す
-    keys = @redis.keys("comment-*")
-    now = Time.now
-    keys.each do |key|
-      json = @redis.get(key)
-      cache = JSON.parse(json)
-      created_at = Time.parse(cache['created_at'])
-      diff = now - created_at
-
-      # 1時間以上前のログを消す
-      @redis.del(key) if diff > (60 * 60)
-    end
-
-    cache_json = @redis.get("comment-#{comment_number}")
+    cache_json = get_redis("comment-#{comment_number}")
     unless cache_json.nil?
       puts '[LOG] cache hit'
       cache = JSON.parse(cache_json)
@@ -112,13 +87,23 @@ class EsaClient
     comment['body_md'].lines[0, ESA_MAX_COMMENT_LINES].map{ |item| item.chomp }.join("\n")
   end
 
+  def get_redis(key)
+    # ttl導入前のkeyが残り続けることを避ける
+    @redis.keys.each do |key|
+      if @redis.ttl(key) == -1
+        @redis.expire(key, REDIS_TTL)
+      end
+    end
+
+    @redis.get(key)
+  end
+
   def set_redis(key, info)
     json = {
-      created_at: Time.now,
       info: info
     }.to_json
 
-    @redis.set(key, json)
+    @redis.set(key, json, ex: REDIS_TTL)
   end
 
   def generate_footer(post)
