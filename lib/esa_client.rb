@@ -35,7 +35,7 @@ class EsaClient
     footer = generate_footer(post)
 
     info = {
-      title: title,
+      title: unescape(title),
       title_link: post['url'],
       author_name: post['created_by']['screen_name'],
       author_icon: post['created_by']['icon'],
@@ -80,11 +80,15 @@ class EsaClient
 
   private
   def article_text(post)
-    post['body_md'].lines[0, ESA_MAX_ARTICLE_LINES].map{ |item| item.chomp }.join("\n")
+    unescape(post['body_md'].lines[0, ESA_MAX_ARTICLE_LINES].map{ |item| item.chomp }.join("\n"))
   end
 
   def comment_text(comment)
-    comment['body_md'].lines[0, ESA_MAX_COMMENT_LINES].map{ |item| item.chomp }.join("\n")
+    unescape(comment['body_md'].lines[0, ESA_MAX_COMMENT_LINES].map{ |item| item.chomp }.join("\n"))
+  end
+
+  def unescape(str)
+    str.gsub('&#35;', '#').gsub('&#47;', '/')
   end
 
   def get_redis(key)
