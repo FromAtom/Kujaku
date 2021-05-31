@@ -29,6 +29,9 @@ GEM
     multipart-post (2.1.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
+    nio4r (2.5.7)
+    puma (5.3.2)
+      nio4r (~> 2.0)
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
@@ -52,6 +55,7 @@ PLATFORMS
 
 DEPENDENCIES
   esa
+  puma
   redis
   sinatra
   sinatra-contrib
@@ -60,4 +64,4 @@ RUBY VERSION
    ruby 3.0.1p64
 
 BUNDLED WITH
-   1.16.4
+   2.2.18
