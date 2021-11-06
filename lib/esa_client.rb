@@ -49,7 +49,7 @@ class EsaClient
     return info
   end
 
-  def get_comment(comment_number)
+  def get_comment(post_number, comment_number)
     cache_json = get_redis("comment-#{comment_number}")
     unless cache_json.nil?
       puts '[LOG] cache hit'
@@ -57,14 +57,28 @@ class EsaClient
       return cache['info']
     end
 
-    comment = @esa_client.comment(comment_number).body
+    post = @esa_client.post(post_number, {include: "comments"}).body
+    return {} if post.nil?
+
+    comment = nil
+    post['comments'].each do |c|
+      if c['id'] == comment_number.to_i
+        comment = c
+        break
+      end
+    end
+
+    if comment.nil?
+      comment = @esa_client.comment(comment_number).body
+    end
     return {} if comment.nil?
 
-    title = comment['full_name']
-    title.insert(0, '[WIP] ') if comment['wip']
+    post_name = post['full_name']
+    post_name.insert(0, '[WIP] ') if post['wip']
+    title = "#{post_name} へのコメント"
     footer = generate_footer(comment)
     info = {
-      title: 'コメント',
+      title: title,
       title_link: comment['url'],
       author_name: comment['created_by']['screen_name'],
       author_icon: comment['created_by']['icon'],
