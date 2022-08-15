@@ -30,7 +30,7 @@
   "image": "heroku/ruby",
   "addons": [
     {
-      "plan": "redistogo:nano"
+      "plan": "heroku-redis:hobby-dev"
     },
     {
       "plan": "papertrail"
