@@ -1,3 +1,6 @@
+ENV["RACK_ENV"] ||= "development"
+Bundler.require(:default, ENV["RACK_ENV"])
+
 require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'json'
