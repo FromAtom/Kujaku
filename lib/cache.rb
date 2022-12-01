@@ -1,5 +1,6 @@
 require 'redis'
 require 'json'
+require 'google/cloud/firestore'
 
 class Cache
     REDIS_TTL = 60 * 60 # 1時間
@@ -7,6 +8,10 @@ class Cache
     def initialize
         if redis_enable?
             @redis = Redis.new(:url => ENV['REDIS_URL'])
+        end
+
+        if firestore_enable?
+            @firestore = Google::Cloud::Firestore.new
         end
     end
 
@@ -23,6 +28,10 @@ class Cache
     private
     def redis_enable?
         ENV['REDIS_URL'] && !ENV['REDIS_URL'].empty?
+    end
+
+    def firestore_enable?
+        ENV['FIRESTORE_COLLECTION'] && !ENV['FIRESTORE_COLLECTION'].empty?
     end
 
     def get_redis(key)

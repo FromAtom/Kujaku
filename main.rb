@@ -10,6 +10,12 @@ require_relative 'lib/slack_api_client'
 
 ESA_TEAM_NAME = ENV['ESA_TEAM_NAME']
 
+require_relative 'lib/cache'
+
+Cache.new
+
+exit
+
 post '/' do
   puts '[START]'
   params = JSON.parse(request.body.read)
