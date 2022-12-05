@@ -1,26 +1,25 @@
 require 'esa'
-require 'redis'
 require 'json'
 require 'time'
+
+require_relative 'cache'
 
 class EsaClient
   ESA_ACCESS_TOKEN = ENV['ESA_ACCESS_TOKEN']
   ESA_TEAM_NAME = ENV['ESA_TEAM_NAME']
   ESA_MAX_ARTICLE_LINES = ENV.fetch('ESA_MAX_ARTICLE_LINES', '10').to_i
   ESA_MAX_COMMENT_LINES = ENV.fetch('ESA_MAX_COMMENT_LINES', '10').to_i
-  REDIS_URL = ENV['REDIS_URL']
-  REDIS_TTL = 60 * 60 # 1時間
 
   def initialize
     @esa_client = Esa::Client.new(
       access_token: ESA_ACCESS_TOKEN,
       current_team: ESA_TEAM_NAME
     )
-    @redis = Redis.new(:url => REDIS_URL)
+    @cache = Cache.new
   end
 
   def get_post(post_number)
-    cache_json = get_redis(post_number)
+    cache_json = @cache.get(post_number)
     unless cache_json.nil?
       puts '[LOG] cache hit'
       cache = JSON.parse(cache_json)
@@ -45,12 +44,12 @@ class EsaClient
       ts: Time.parse(post['updated_at']).to_i
     }
 
-    set_redis(post_number, info)
+    @cache.set(post_number, info)
     return info
   end
 
   def get_comment(post_number, comment_number)
-    cache_json = get_redis("comment-#{comment_number}")
+    cache_json = @cache.get("comment-#{comment_number}")
     unless cache_json.nil?
       puts '[LOG] cache hit'
       cache = JSON.parse(cache_json)
@@ -88,7 +87,7 @@ class EsaClient
       ts: Time.parse(comment['updated_at']).to_i
     }
 
-    set_redis("comment-#{comment_number}", info)
+    @cache.set("comment-#{comment_number}", info)
     return info
   end
 
@@ -103,25 +102,6 @@ class EsaClient
 
   def unescape(str)
     str.gsub('&#35;', '#').gsub('&#47;', '/')
-  end
-
-  def get_redis(key)
-    # ttl導入前のkeyが残り続けることを避ける
-    @redis.keys.each do |key|
-      if @redis.ttl(key) == -1
-        @redis.expire(key, REDIS_TTL)
-      end
-    end
-
-    @redis.get(key)
-  end
-
-  def set_redis(key, info)
-    json = {
-      info: info
-    }.to_json
-
-    @redis.set(key, json, ex: REDIS_TTL)
   end
 
   def generate_footer(post)

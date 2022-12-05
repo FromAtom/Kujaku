@@ -1,9 +1,13 @@
+ENV["RACK_ENV"] ||= "development"
+Bundler.require(:default, ENV["RACK_ENV"])
+
 require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'json'
 
 require_relative 'lib/esa_client'
 require_relative 'lib/slack_api_client'
+require_relative 'lib/cache'
 
 ESA_TEAM_NAME = ENV['ESA_TEAM_NAME']
 
