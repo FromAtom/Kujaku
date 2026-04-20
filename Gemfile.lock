@@ -1,8 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.1)
-      public_suffix (>= 2.0.2, < 6.0)
+    addressable (2.9.0)
+      public_suffix (>= 2.0.2, < 8.0)
     concurrent-ruby (1.1.10)
     connection_pool (2.3.0)
     dotenv (2.8.1)
@@ -91,7 +91,7 @@ GEM
       ruby2_keywords (~> 0.0.1)
     nio4r (2.5.8)
     os (1.1.4)
-    public_suffix (5.0.1)
+    public_suffix (7.0.5)
     puma (6.0.0)
       nio4r (~> 2.0)
     rack (2.2.4)
